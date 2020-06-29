@@ -1,0 +1,33 @@
+sqoop-job --create xyz -- import --connect "jdbc:mysql://localhost/e1" --username nikhil --P --bindir $SQOOP_HOME/lib --table customer --m 1 --fields-terminated-by '|';
+
+create table customer(orderid INT, name VARCHAR(20), orderitem VARCHAR(20));
+
+insert into customer value(1,'Aman','Rice');
+insert into customer value(2,'Anshul','wheat');
+insert into customer value(3,'Nikhil','Rice');
+insert into customer value(4,'Virat','Rice');
+insert into customer value(5,'Ankit','Wheat');
+insert into customer value(6,'Pratik','Sugar');
+insert into customer value(7,'Navin','Rice');
+insert into customer value(8,'Omdeep','Sugar');
+insert into customer value(9,'Rishikesh','Rice');
+insert into customer value(1,'Abhishek','Sugar');
+
+sqoop import --connect jdbc:mysql://localhost/e1 --username nikhil --P --splitby orderid --columns orderid,customername
+--table customer --hive-import 
+
+sqoop import --connect jdbc:mysql://localhost:3306/e1 --username nikhil --P --split-by orderid --columns orderid,customername --table customer --target-dir /user/cloudera/ingest/raw/customers --fields-terminated-by "," --hive import --create-hive-table --hive-table sqoop_workspace.customers
+
+
+
+2)sqoop import --connect jdbc:mysql://localhost/e1 --bindir $SQOOP_HOME/lib/ --username nikhil --P --table customer --m 1 --target-dir /home/nikhil/output --where "orderid>5 AND orderitem='Sugar'";
+
+sqoop-job --create customer-- export --connect "jdbc:mysql://localhost/e1" --username nikhil --P --bindir $SQOOP_HOME/lib --table customer --export-dir /home/nikhil/Desktop/customer.txt;
+
+
+1) sqoop import --connect jdbc:mysql://localhost/e1 --bindir $SQOOP_HOME/lib/ --username nikhil --P --bindir $SQOOP_HOME/lib --table customer --hive-import --create-hive-table --hive-database default newcustomer --m 1;
+
+
+sqoop-job --create customer1 --export --connect "jdbc:mysql://localhost/e1" --username nikhil --P --bindir $SQOOP_HOME/lib --table customer1 --export-dir /home/nikhil/Desktop/cust.txt;
+
+sqoop-job --create customer1-- export --connect "jdbc:mysql://localhost/e1" --username nikhil --P --bindir $SQOOP_HOME/lib --table customer1 --export-dir /home/nikhil/Desktop/customerdata.txt;
